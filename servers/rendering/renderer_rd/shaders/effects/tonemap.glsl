@@ -94,6 +94,7 @@ layout(push_constant, std430) uniform Params {
 	float glow_levels[7];
 
 	float exposure;
+	float gamma;
 	float white;
 	float auto_exposure_scale;
 	float luminance_multiplier;
@@ -260,24 +261,35 @@ vec3 tonemap_reinhard(vec3 color, float white) {
 	return (white * color + color) / (color * white + white);
 }
 
-vec3 linear_to_srgb(vec3 color) {
+/*vec3 tonemap_grgb(vec3 color, float gamma) {
+	color = clamp(color, vec3(0.0), vec3(1.0));
+	return pow(color,vec3(1.0f / gamma));
+
+}*/
+
+vec3 linear_to_srgb(vec3 color, float gamma) {
 	//if going to srgb, clamp from 0 to 1.
 	color = clamp(color, vec3(0.0), vec3(1.0));
-	const vec3 a = vec3(0.055f);
-	return mix((vec3(1.0f) + a) * pow(color.rgb, vec3(1.0f / 2.4f)) - a, 12.92f * color.rgb, lessThan(color.rgb, vec3(0.0031308f)));
+	//const vec3 a = vec3(0.055f);
+	//return mix((vec3(1.0f) + a) * pow(color.rgb, vec3(1.0f / 2.4f)) - a, 12.92f * color.rgb, lessThan(color.rgb, vec3(0.0031308f)));
+	return pow(color,vec3(1.0f / gamma));
 }
+
 
 #define TONEMAPPER_LINEAR 0
 #define TONEMAPPER_REINHARD 1
 #define TONEMAPPER_FILMIC 2
 #define TONEMAPPER_ACES 3
+//#define TONEMAPPER_GRGB 4
 
-vec3 apply_tonemapping(vec3 color, float white) { // inputs are LINEAR, always outputs clamped [0;1] color
+vec3 apply_tonemapping(vec3 color, float white, float gamma) { // inputs are LINEAR, always outputs clamped [0;1] color
 	// Ensure color values passed to tonemappers are positive.
 	// They can be negative in the case of negative lights, which leads to undesired behavior.
-	if (params.tonemapper == TONEMAPPER_LINEAR) {
+	if (params.tonemapper == TONEMAPPER_LINEAR){
 		return color;
-	} else if (params.tonemapper == TONEMAPPER_REINHARD) {
+	//}else if (params.tonemapper == TONEMAPPER_GRGB){ 
+	//	return tonemap_grgb(color, gamma);
+	}else if (params.tonemapper == TONEMAPPER_REINHARD) {
 		return tonemap_reinhard(max(vec3(0.0f), color), white);
 	} else if (params.tonemapper == TONEMAPPER_FILMIC) {
 		return tonemap_filmic(max(vec3(0.0f), color), white);

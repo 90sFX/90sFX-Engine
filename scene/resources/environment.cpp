@@ -221,6 +221,15 @@ float Environment::get_tonemap_exposure() const {
 	return tonemap_exposure;
 }
 
+void Environment::set_tonemap_gamma(float p_gamma) {
+	tonemap_gamma = p_gamma;
+	_update_tonemap();
+}
+
+float Environment::get_tonemap_gamma() const {
+	return tonemap_gamma;
+}
+
 void Environment::set_tonemap_white(float p_white) {
 	tonemap_white = p_white;
 	_update_tonemap();
@@ -234,6 +243,7 @@ void Environment::_update_tonemap() {
 	RS::get_singleton()->environment_set_tonemap(
 			environment,
 			RS::EnvironmentToneMapper(tone_mapper),
+			tonemap_gamma,
 			tonemap_exposure,
 			tonemap_white);
 }
@@ -1274,12 +1284,16 @@ void Environment::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_tonemapper"), &Environment::get_tonemapper);
 	ClassDB::bind_method(D_METHOD("set_tonemap_exposure", "exposure"), &Environment::set_tonemap_exposure);
 	ClassDB::bind_method(D_METHOD("get_tonemap_exposure"), &Environment::get_tonemap_exposure);
+	ClassDB::bind_method(D_METHOD("set_tonemap_gamma", "gamma"), &Environment::set_tonemap_gamma);
+	ClassDB::bind_method(D_METHOD("get_tonemap_gamma"), &Environment::get_tonemap_gamma);
+	
 	ClassDB::bind_method(D_METHOD("set_tonemap_white", "white"), &Environment::set_tonemap_white);
 	ClassDB::bind_method(D_METHOD("get_tonemap_white"), &Environment::get_tonemap_white);
 
 	ADD_GROUP("Tonemap", "tonemap_");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "tonemap_mode", PROPERTY_HINT_ENUM, "Linear,Reinhard,Filmic,ACES"), "set_tonemapper", "get_tonemapper");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "tonemap_mode", PROPERTY_HINT_ENUM, "Linear,Reinhard,Filmic,ACES,GRGB"), "set_tonemapper", "get_tonemapper");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "tonemap_exposure", PROPERTY_HINT_RANGE, "0,16,0.01"), "set_tonemap_exposure", "get_tonemap_exposure");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "tonemap_gamma", PROPERTY_HINT_RANGE, "0,16,0.01"), "set_tonemap_gamma", "get_tonemap_gamma");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "tonemap_white", PROPERTY_HINT_RANGE, "0,16,0.01"), "set_tonemap_white", "get_tonemap_white");
 
 	// SSR
@@ -1583,6 +1597,7 @@ void Environment::_bind_methods() {
 	BIND_ENUM_CONSTANT(TONE_MAPPER_REINHARDT);
 	BIND_ENUM_CONSTANT(TONE_MAPPER_FILMIC);
 	BIND_ENUM_CONSTANT(TONE_MAPPER_ACES);
+	BIND_ENUM_CONSTANT(TONE_MAPPER_GRGB);
 
 	BIND_ENUM_CONSTANT(GLOW_BLEND_MODE_ADDITIVE);
 	BIND_ENUM_CONSTANT(GLOW_BLEND_MODE_SCREEN);

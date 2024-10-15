@@ -191,10 +191,11 @@ RS::EnvironmentReflectionSource RendererEnvironmentStorage::environment_get_refl
 
 // Tonemap
 
-void RendererEnvironmentStorage::environment_set_tonemap(RID p_env, RS::EnvironmentToneMapper p_tone_mapper, float p_exposure, float p_white) {
+void RendererEnvironmentStorage::environment_set_tonemap(RID p_env, RS::EnvironmentToneMapper p_tone_mapper, float p_exposure, float p_gamma, float p_white) {
 	Environment *env = environment_owner.get_or_null(p_env);
 	ERR_FAIL_NULL(env);
 	env->exposure = p_exposure;
+	env->gamma = p_gamma;
 	env->tone_mapper = p_tone_mapper;
 	env->white = p_white;
 }

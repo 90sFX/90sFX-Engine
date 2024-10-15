@@ -86,6 +86,7 @@ private:
 
 		float exposure; //  4 - 84
 		float white; //  4 - 88
+		float gamma;
 		float auto_exposure_scale; //  4 - 92
 		float luminance_multiplier; //  4 - 96
 	};
@@ -126,6 +127,7 @@ public:
 
 		RS::EnvironmentToneMapper tonemap_mode = RS::ENV_TONE_MAPPER_LINEAR;
 		float exposure = 1.0;
+		float gamma = 1.0;
 		float white = 1.0;
 
 		bool use_auto_exposure = false;

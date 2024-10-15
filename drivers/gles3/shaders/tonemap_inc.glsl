@@ -1,5 +1,6 @@
 layout(std140) uniform TonemapData { //ubo:0
 	float exposure;
+	float gamma;
 	float white;
 	int tonemapper;
 	int pad;
@@ -84,6 +85,8 @@ vec3 tonemap_reinhard(vec3 color, float p_white) {
 #define TONEMAPPER_REINHARD 1
 #define TONEMAPPER_FILMIC 2
 #define TONEMAPPER_ACES 3
+//#define TONEMAPPER_GRGB 4
+
 
 vec3 apply_tonemapping(vec3 color, float p_white) { // inputs are LINEAR, always outputs clamped [0;1] color
 	// Ensure color values passed to tonemappers are positive.

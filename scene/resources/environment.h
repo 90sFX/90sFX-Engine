@@ -63,10 +63,12 @@ public:
 	};
 
 	enum ToneMapper {
+		
 		TONE_MAPPER_LINEAR,
 		TONE_MAPPER_REINHARDT,
 		TONE_MAPPER_FILMIC,
 		TONE_MAPPER_ACES,
+		TONE_MAPPER_GRGB,
 	};
 
 	enum SDFGIYScale {
@@ -113,6 +115,7 @@ private:
 
 	// Tonemap
 	ToneMapper tone_mapper = TONE_MAPPER_LINEAR;
+	float tonemap_gamma = 1.0;
 	float tonemap_exposure = 1.0;
 	float tonemap_white = 1.0;
 	void _update_tonemap();
@@ -269,6 +272,8 @@ public:
 	ToneMapper get_tonemapper() const;
 	void set_tonemap_exposure(float p_exposure);
 	float get_tonemap_exposure() const;
+	void set_tonemap_gamma(float p_gamma);
+	float get_tonemap_gamma() const;
 	void set_tonemap_white(float p_white);
 	float get_tonemap_white() const;
 
